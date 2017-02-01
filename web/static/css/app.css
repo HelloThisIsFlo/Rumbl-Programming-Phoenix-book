@@ -1,1 +1,16 @@
 /* This file is for your main application css. */
+
+/*
+Todo: Figure out where to put these attributes.
+Is this file the right place ? 
+*/
+.profile-picture {
+    max-width: 0px;
+}
+.profile-picture > img {
+    border-radius: 50%;
+    border: 3px solid black;
+}
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
