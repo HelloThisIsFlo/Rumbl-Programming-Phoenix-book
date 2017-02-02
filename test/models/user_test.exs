@@ -45,4 +45,21 @@ defmodule Rumbl.UserTest do
     assert valid4.valid?, inspect(valid4)
   end
 
+  test "password is ignored in the changeset" do
+    with_password = %User{password: "asd", name: "Frank"}
+
+    no_changes = User.changeset(with_password, %{})
+    password_change = User.changeset(with_password, %{password: "asdf"})
+    username_change = User.changeset(with_password, %{username: "hello123", password: "asdf"})
+
+    assert_password_change_is_ignored no_changes
+    assert_password_change_is_ignored password_change
+    assert_password_change_is_ignored username_change
+    assert Map.has_key? username_change.changes, :username
+  end
+
+  def assert_password_change_is_ignored(changeset) do
+    refute Map.has_key? changeset.changes, :password
+    assert changeset.valid?
+  end
 end
