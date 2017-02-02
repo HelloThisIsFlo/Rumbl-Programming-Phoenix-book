@@ -9,4 +9,11 @@ defmodule Rumbl.User do
 
     timestamps
   end
+
+  def changeset(user, params \\ :invalid) do # passing emtpy deprecated, pass %{} or :invalid
+    user
+    |> cast(params, [:name, :username])
+    |> validate_required([:name])
+    |> validate_length(:username, min: 3, max: 20)
+  end
 end
