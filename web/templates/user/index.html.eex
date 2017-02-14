@@ -10,3 +10,4 @@
     <% end %>
 </table>
 
+<%= link "Create new User", to: user_path(@conn, :new), class: "btn btn-primary btn-lg btn-block" %>

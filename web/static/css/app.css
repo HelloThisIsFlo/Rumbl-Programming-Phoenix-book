@@ -5,7 +5,7 @@ Todo: Figure out where to put these attributes.
 Is this file the right place ? 
 */
 .profile-picture {
-    max-width: 0px;
+    max-width: 30px;
 }
 .profile-picture > img {
     border-radius: 50%;
@@ -13,4 +13,8 @@ Is this file the right place ?
 }
 .table > tbody > tr > td {
     vertical-align: middle;
+}
+
+* {
+    /* border: solid red 1px; */
 }
