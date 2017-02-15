@@ -2,3 +2,5 @@
     <h2>Welcome to Rumbl.io!</h2>
     <p class="lead">Rumble out loud.</p>
 </div>
+
+<%= link "Go to Userlist", to: user_path(@conn, :index), class: "btn btn-primary brn-lg btn-block" %>

@@ -3,6 +3,12 @@ defmodule Rumbl.UserController do
   alias Rumbl.User
 
   def index(conn, _params) do
+    conn
+    |> authenticate
+    |> do_index
+  end
+  defp do_index(%Plug.Conn{halted: true} = conn), do: conn
+  defp do_index(conn) do
     users = Repo.all(User)
     render conn, "index.html", users: users
   end
@@ -28,5 +34,16 @@ defmodule Rumbl.UserController do
         render(conn, "new.html", changeset: changeset)
     end
   end
+
+  defp authenticate(conn) do
+    do_authenticate(conn, conn.assigns.current_user)
+  end
+  defp do_authenticate(conn, nil) do
+    conn
+    |> put_flash(:error, "You must be logged in to access that page")
+    |> redirect(to: page_path(conn, :index))
+    |> halt()
+  end
+  defp do_authenticate(conn, _current_user), do: conn
 
 end
