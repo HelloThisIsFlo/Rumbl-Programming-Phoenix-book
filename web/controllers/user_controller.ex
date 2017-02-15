@@ -2,13 +2,9 @@ defmodule Rumbl.UserController do
   use Rumbl.Web, :controller
   alias Rumbl.User
 
-  def index(conn, _params) do
-    conn
-    |> authenticate
-    |> do_index
-  end
-  defp do_index(%Plug.Conn{halted: true} = conn), do: conn
-  defp do_index(conn) do
+  plug :authenticate when action in [:index, :show]
+
+  def index(conn, _opts) do
     users = Repo.all(User)
     render conn, "index.html", users: users
   end
@@ -24,25 +20,30 @@ defmodule Rumbl.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    changeset = User.registration_changeset(%User{}, user_params)
-    case Repo.insert(changeset) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "#{user.name} created!")
-        |> redirect(to: user_path(conn, :index))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
+    %User{}
+    |> User.registration_changeset(user_params)
+    |> Repo.insert
+    |> on_user_created(conn)
+  end
+  defp on_user_created({:error, changeset}, conn) do
+    render(conn, "new.html", changeset: changeset)
+  end
+  defp on_user_created({:ok, user}, conn) do
+    conn
+    |> Rumbl.Auth.login(user)
+    |> put_flash(:info, "#{user.name} created!")
+    |> redirect(to: user_path(conn, :index))
   end
 
-  defp authenticate(conn) do
+
+  defp authenticate(conn, opts) do
     do_authenticate(conn, conn.assigns.current_user)
   end
   defp do_authenticate(conn, nil) do
     conn
     |> put_flash(:error, "You must be logged in to access that page")
     |> redirect(to: page_path(conn, :index))
-    |> halt()
+    |> halt() # This prevents further plugs downstream to be invoked !
   end
   defp do_authenticate(conn, _current_user), do: conn
 
