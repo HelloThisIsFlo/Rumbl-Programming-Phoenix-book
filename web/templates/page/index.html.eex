@@ -3,5 +3,4 @@
     <p class="lead">Rumble out loud.</p>
 </div>
 
-<%= link "Go to Userlist", to: user_path(@conn, :index), class: "btn btn-primary brn-lg btn-block" %>
-<%= link "Create new User", to: user_path(@conn, :new), class:  "btn btn-primary brn-lg btn-block" %>
+<%= link "Go to Userlist", to: user_path(@conn, :index), class: "btn btn-primary btn-lg  btn-block" %>
