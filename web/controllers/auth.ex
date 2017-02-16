@@ -2,6 +2,8 @@ defmodule Rumbl.Auth do
   alias Rumbl.User
   alias Comeonin.Bcrypt
   import Plug.Conn
+  import Phoenix.Controller
+  alias Rumbl.Router.Helpers
 
   def init(opts) do
     # Check that the repo is provided, crash if not
@@ -15,6 +17,23 @@ defmodule Rumbl.Auth do
     user    = user_id && repo.get(Rumbl.User, user_id)
     assign(conn, :current_user, user)
   end
+
+
+  ##################################
+  ### Authenticate function plug ###
+  ##################################
+  def authenticate_user(conn, opts) do
+    do_authenticate(conn, conn.assigns.current_user)
+  end
+  defp do_authenticate(conn, nil) do
+    conn
+    |> put_flash(:error, "You must be logged in to access that page")
+    |> redirect(to: Helpers.page_path(conn, :index))
+    |> halt() # This prevents further plugs downstream to be invoked !
+  end
+  defp do_authenticate(conn, _current_user), do: conn
+
+
 
   def login(conn, user) do
     conn

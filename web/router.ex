@@ -28,6 +28,11 @@ defmodule Rumbl.Router do
     # post "/users",     UserController, :create
 
     resources "/sessions", SessionController, only: [:new, :create, :delete]
+  end
+
+  scope "/manage", Rumbl do
+    pipe_through [:browser, :authenticate_user]
+
     resources "/videos", VideoController
   end
 
