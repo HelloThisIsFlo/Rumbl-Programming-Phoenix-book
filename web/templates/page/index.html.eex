@@ -4,3 +4,4 @@
 </div>
 
 <%= link "Go to Userlist", to: user_path(@conn, :index), class: "btn btn-primary btn-lg  btn-block" %>
+<%= link "Go to Videolist", to: video_path(@conn, :index), class: "btn btn-primary btn-lg btn-block" %>
