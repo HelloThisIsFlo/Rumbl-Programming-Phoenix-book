@@ -28,6 +28,7 @@ defmodule Rumbl.Router do
     # post "/users",     UserController, :create
 
     resources "/sessions", SessionController, only: [:new, :create, :delete]
+    resources "/videos", VideoController
   end
 
   # Other scopes may use custom stacks.
