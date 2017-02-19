@@ -22,7 +22,7 @@ defmodule Rumbl.Auth do
   ##################################
   ### Authenticate function plug ###
   ##################################
-  def authenticate_user(conn, opts) do
+  def authenticate_user(conn, _opts) do
     do_authenticate(conn, conn.assigns.current_user)
   end
   defp do_authenticate(conn, nil) do

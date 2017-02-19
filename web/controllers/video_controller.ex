@@ -1,14 +1,35 @@
 defmodule Rumbl.VideoController do
   use Rumbl.Web, :controller
-
   alias Rumbl.Video
+  alias Rumbl.Category
+  require Logger
 
+  plug :load_categories_in_template when action in [:new, :create, :edit, :update]
+
+  # Override action function ##################################################
   def action(conn, _) do
     apply(__MODULE__, action_name(conn), [conn,
                                           conn.params,
                                           conn.assigns.current_user])
   end
 
+  # Function Plug #############################################################
+  def load_categories_in_template(conn, _) do
+    Logger.debug "Loading video categories in template"
+    categories =
+      Category
+      |> names_and_ids_tuple
+      |> alphabetically
+      |> Repo.all
+    assign(conn, :categories, categories)
+  end
+  defp alphabetically(category_query), do: from c in category_query, order_by: c.name
+  defp names_and_ids_tuple(category_query), do: from c in category_query, select: {c.name, c.id}
+
+
+  #############################################################################
+  #                                 Controller                                #
+  #############################################################################
   def index(conn, _params, user) do
     videos = Repo.all(user_videos_query(user))
     render(conn, "index.html", videos: videos)
