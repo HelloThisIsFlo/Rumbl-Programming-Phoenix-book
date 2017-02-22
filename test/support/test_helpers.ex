@@ -1,12 +1,13 @@
 defmodule Rumbl.TestHelpers do
   alias Rumbl.Repo
 
-  def insert_user(attrs \\ %{}) do
+  def insert_user(attrs \\ []) do
+    attrs_map = Enum.into(attrs, %{})
     changes = Map.merge(%{
           name: "Some User",
           username: "user#{Base.encode16(:crypto.rand_bytes(8))}",
           password: "supersecret"},
-    attrs)
+    attrs_map)
 
     %Rumbl.User{}
     |> Rumbl.User.registration_changeset(changes)
