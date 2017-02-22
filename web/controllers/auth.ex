@@ -13,9 +13,15 @@ defmodule Rumbl.Auth do
 
   def call(conn, repo) do
     user_id = get_session(conn, :user_id)
-    # This means: If left value not null => Get right value
-    user    = user_id && repo.get(Rumbl.User, user_id)
-    assign(conn, :current_user, user)
+    cond do
+      # Meaning: pattern match & user != nil
+      user = conn.assigns[:current_user] ->
+        conn
+      user = user_id && repo.get(Rumbl.User, user_id) ->
+        assign(conn, :current_user, user)
+      true ->
+        assign(conn, :current_user, nil)
+    end
   end
 
 
