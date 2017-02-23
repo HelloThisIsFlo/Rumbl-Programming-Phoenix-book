@@ -1,7 +1,55 @@
 defmodule Rumbl.UserTest do
-  use Rumbl.ModelCase
+  use Rumbl.ModelCase, async: true
   alias Rumbl.User
 
+  @valid_attrs %{name: "A User", username: "eva2000", password: "secret"}
+  @invalid_attrs %{}
+
+  test "changeset with valid attributes" do
+    changeset = User.changeset(%User{}, @valid_attrs)
+    assert changeset.valid?
+  end
+
+  test "changeset with invalid attributes" do
+    changeset = User.changeset(%User{}, @invalid_attrs)
+    refute changeset.valid?
+  end
+
+  test "changeset does not accept long usernames" do
+    attrs = Map.put(@valid_attrs, :username, String.duplicate("a", 30))
+
+    assert {:username, "should be at most 20 character(s)"} in errors_on(%User{}, attrs)
+
+  end
+
+  test "registration_changeset password must be at least 6 chars long" do
+    attrs = Map.put(@valid_attrs, :password, "12345")
+    changeset = User.registration_changeset(%User{}, attrs)
+
+    errors =
+      changeset
+      |> Ecto.Changeset.traverse_errors(&Rumbl.ErrorHelpers.translate_error/1)
+      |> Enum.flat_map(fn {key, errors} -> for msg <- errors, do: {key, msg} end)
+
+    assert {:password, "should be at least 6 character(s)"} in errors
+  end
+
+  test "registration_changeset with valid attributes hashes password" do
+    attrs = Map.put(@valid_attrs, :password, "123456")
+    changeset = User.registration_changeset(%User{}, attrs)
+
+    assert changeset.valid?
+    assert Map.has_key?(changeset.changes, :password_hash)
+
+    pass_hash = Map.fetch!(changeset.changes, :password_hash)
+    assert Comeonin.Bcrypt.checkpw("123456", pass_hash)
+  end
+
+
+
+  #############################################################################
+  #                        My tests (not from the book)                       #
+  #############################################################################
   test "no name => invalid changeset" do
     user = %User{name: "patrick", username: "patou223"}
     no_name = %User{username: "patou223"}
@@ -62,4 +110,5 @@ defmodule Rumbl.UserTest do
     refute Map.has_key? changeset.changes, :password
     assert changeset.valid?
   end
+
 end
