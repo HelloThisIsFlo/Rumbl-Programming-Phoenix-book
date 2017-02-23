@@ -5,7 +5,7 @@ defmodule Rumbl.TestHelpers do
     attrs_map = Enum.into(attrs, %{})
     changes = Map.merge(%{
           name: "Some User",
-          username: "user#{Base.encode16(:crypto.rand_bytes(8))}",
+          username: "user#{Base.encode16(:crypto.strong_rand_bytes(8))}",
           password: "supersecret"},
     attrs_map)
 

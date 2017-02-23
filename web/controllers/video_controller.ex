@@ -18,13 +18,11 @@ defmodule Rumbl.VideoController do
     Logger.debug "Loading video categories in template"
     categories =
       Category
-      |> names_and_ids_tuple
-      |> alphabetically
+      |> Category.names_and_ids_tuple
+      |> Category.alphabetically
       |> Repo.all
     assign(conn, :categories, categories)
   end
-  defp alphabetically(category_query), do: from c in category_query, order_by: c.name
-  defp names_and_ids_tuple(category_query), do: from c in category_query, select: {c.name, c.id}
 
 
   #############################################################################
