@@ -43,20 +43,6 @@ defmodule Rumbl.VideoControllerTest do
   end
 
   @tag login_as: "max"
-  test "create a video, and show it on show/index", %{conn: conn, user: user} do
-    params = %{
-      url: "http://hello",
-      title: "title",
-      description: "description"
-    }
-
-    post conn, video_path(conn, :create), video: params
-
-    conn = get conn, video_path(conn, :index)
-    assert html_response(conn, 200) =~ "http://hello"
-  end
-
-  @tag login_as: "max"
   test "creates user video and redirects", %{conn: conn, user: user} do
     conn = post conn, video_path(conn, :create), video: @valid_video_params
     assert redirected_to(conn) == video_path(conn, :index)
@@ -64,7 +50,7 @@ defmodule Rumbl.VideoControllerTest do
   end
 
   @tag login_as: "max"
-  test "does not cresate video and renders errors when invalid", %{conn: conn} do
+  test "does not create video and renders errors when invalid", %{conn: conn} do
     # Given: No video stored
     assert video_count(Video) == 0
 
