@@ -7,7 +7,4 @@ defmodule Rumbl.WatchController do
     render(conn, "show.html", video: video)
   end
 
-
-
-
 end
