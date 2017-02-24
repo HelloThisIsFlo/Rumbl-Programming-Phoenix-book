@@ -28,6 +28,8 @@ defmodule Rumbl.Router do
     # post "/users",     UserController, :create
 
     resources "/sessions", SessionController, only: [:new, :create, :delete]
+
+    get "/watch/:id", WatchController, :show
   end
 
   scope "/manage", Rumbl do
